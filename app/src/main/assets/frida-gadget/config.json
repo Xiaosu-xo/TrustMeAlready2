@@ -1,0 +1,8 @@
+{
+  "interaction": {
+    "type": "script-directory",
+    "path": "../tma_frida_scripts",
+    "on_change": "rescan"
+  },
+  "teardown": "full"
+}

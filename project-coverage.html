@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrustMeAlready v2.8 - ??????</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --bg-card: #131829;
+    --bg-card2: #1a2138;
+    --accent-cyan: #00e5ff;
+    --accent-green: #00e676;
+    --accent-orange: #ff9100;
+    --accent-purple: #b388ff;
+    --accent-pink: #ff4081;
+    --accent-blue: #448aff;
+    --accent-yellow: #ffeb3b;
+    --text-primary: #ffffff;
+    --text-secondary: #b0bec5;
+    --text-muted: #607d8b;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(0,229,255,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(179,136,255,0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+    animation: fadeInDown 0.8s ease;
+  }
+  .header .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    color: #000;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 4px 16px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+  }
+  .header h1 {
+    font-size: 42px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 50%, var(--accent-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  .header .subtitle {
+    font-size: 16px;
+    color: var(--text-secondary);
+    font-weight: 300;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 50px;
+    animation: fadeIn 1s ease 0.2s both;
+  }
+  .stat-item {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .stat-num.cyan { color: var(--accent-cyan); }
+  .stat-num.green { color: var(--accent-green); }
+  .stat-num.orange { color: var(--accent-orange); }
+  .stat-num.purple { color: var(--accent-purple); }
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 40px;
+    animation: fadeInUp 0.6s ease both;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title .icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .section-title .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+  }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  /* Module card */
+  .module-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-accent, var(--accent-cyan));
+  }
+  .module-card:hover {
+    background: var(--bg-card2);
+    border-color: var(--card-accent, var(--accent-cyan));
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+  .module-card .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .module-card .card-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .module-card .card-tag {
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-weight: 500;
+  }
+  .tag-enabled { background: rgba(0,230,118,0.15); color: var(--accent-green); }
+  .tag-conditional { background: rgba(255,145,0,0.15); color: var(--accent-orange); }
+  .tag-disabled { background: rgba(255,64,129,0.15); color: var(--accent-pink); }
+  .tag-native { background: rgba(179,136,255,0.15); color: var(--accent-purple); }
+
+  .hook-list {
+    list-style: none;
+    padding: 0;
+  }
+  .hook-list li {
+    padding: 4px 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .hook-list li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 11px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--card-accent, var(--accent-cyan));
+  }
+  .hook-list li code {
+    color: var(--accent-cyan);
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 12px;
+  }
+
+  /* TLS version table */
+  .tls-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .tls-table th {
+    background: var(--bg-card2);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    border-bottom: 1px solid var(--border);
+  }
+  .tls-table td {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+  }
+  .tls-table tr:last-child td { border-bottom: none; }
+  .tls-table .check { color: var(--accent-green); font-weight: 700; }
+  .tls-version {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 12px;
+  }
+  .tls-1-0 { background: rgba(255,145,0,0.15); color: var(--accent-orange); }
+  .tls-1-1 { background: rgba(255,235,59,0.15); color: var(--accent-yellow); }
+  .tls-1-2 { background: rgba(0,229,255,0.15); color: var(--accent-cyan); }
+  .tls-1-3 { background: rgba(179,136,255,0.15); color: var(--accent-purple); }
+
+  /* Compatibility matrix */
+  .compat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .compat-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  .compat-item:hover {
+    border-color: var(--accent-cyan);
+    background: var(--bg-card2);
+  }
+  .compat-item .compat-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .compat-item .compat-name {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .compat-item .compat-ver {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Frida scripts */
+  .frida-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+  .frida-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent-purple);
+    border-radius: 12px;
+    padding: 18px;
+    transition: all 0.3s ease;
+  }
+  .frida-card:hover {
+    background: var(--bg-card2);
+    border-left-color: var(--accent-purple);
+  }
+  .frida-card .frida-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent-purple);
+    margin-bottom: 8px;
+    font-family: 'Consolas', monospace;
+  }
+  .frida-card .frida-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .frida-card .frida-ver {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Architecture flow */
+  .arch-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 30px 0;
+  }
+  .arch-node {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 24px;
+    text-align: center;
+    min-width: 160px;
+  }
+  .arch-node .node-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .arch-node .node-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .arch-arrow {
+    font-size: 24px;
+    color: var(--text-muted);
+  }
+
+  /* Animations */
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .section:nth-child(1) { animation-delay: 0.1s; }
+  .section:nth-child(2) { animation-delay: 0.2s; }
+  .section:nth-child(3) { animation-delay: 0.3s; }
+  .section:nth-child(4) { animation-delay: 0.4s; }
+  .section:nth-child(5) { animation-delay: 0.5s; }
+  .section:nth-child(6) { animation-delay: 0.6s; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 30px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  .footer .version-info {
+    display: inline-flex;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  .footer .version-info span {
+    padding: 4px 12px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  /* NEW badge */
+  .new-badge {
+    display: inline-block;
+    background: var(--accent-green);
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <span class="badge">LSPosed Module + Frida Dual-Mode</span>
+    <h1>TrustMeAlready v2.8</h1>
+    <p class="subtitle">??????????? - Android 5.0 ~ 16 (API 21 ~ 36)</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-num cyan">9</div>
+      <div class="stat-label">Java Hook ??</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num purple">6</div>
+      <div class="stat-label">Frida ??</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num green">40+</div>
+      <div class="stat-label">Hook ???</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num orange">4</div>
+      <div class="stat-label">CPU ??</div>
+    </div>
+  </div>
+
+  <!-- Architecture Flow -->
+  <div class="section">
+    <div class="section-title">
+      <div class="icon" style="background:rgba(0,229,255,0.15);color:var(--accent-cyan)">&#9881;</div>
+      <span>????</span>
+      <div class="line"></div>
+    </div>
+    <div class="arch-flow">
+      <div class="arch-node">
+        <div class="node-title" style="color:var(--accent-cyan)">?? APP</div>
+        <div class="node-sub">? Hook ???</div>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-node">
+        <div class="node-title" style="color:var(--accent-green)">LSPosed</div>
+        <div class="node-sub">Java ? Hook (9 ??)</div>
+      </div>
+      <div class="arch-arrow">+</div>
+      <div class="arch-node">
+        <div class="node-title" style="color:var(--accent-purple)">FridaController</div>
+        <div class="node-sub">Native ? (6 ??)</div>
+      </div>
+      <div class="arch-arrow">&#8594;</div>
+      <div class="arch-node">
+        <div class="node-title" style="color:var(--accent-orange)">??/??</div>
+        <div class="node-sub">HTTPS ?? / Frida CLI</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Java Layer Modules -->
+  <div class="section">
+    <div class="section-title">
+      <div class="icon" style="background:rgba(0,230,118,0.15);color:var(--accent-green)">&#9745;</div>
+      <span>Java ? Hook ?? (LSPosed)</span>
+      <div class="line"></div>
+    </div>
+    <div class="grid">
+
+      <!-- SSL Pinning -->
+      <div class="module-card" style="--card-accent: var(--accent-cyan)">
+        <div class="card-header">
+          <span class="card-name">SSL Pinning Bypass</span>
+          <span class="card-tag tag-enabled">ENABLED</span>
+        </div>
+        <ul class="hook-list">
+          <li>Conscrypt <code>TrustManagerImpl</code> (checkServerTrusted / verifyChain)</li>
+          <li>Legacy Harmony <code>TrustManagerImpl</code></li>
+          <li><code>SSLContext.init</code> - ?? TrustManager[]</li>
+          <li><code>SSLContext.getInstance</code> - ??? "TLS" <span class="new-badge">NEW</span></li>
+          <li><code>SSLSocket.setEnabledProtocols</code> - ??? TLS <span class="new-badge">NEW</span></li>
+          <li><code>SSLEngine.setEnabledProtocols</code> - ??? TLS <span class="new-badge">NEW</span></li>
+          <li><code>SSLSocket.setSSLParameters</code> - ???? <span class="new-badge">NEW</span></li>
+          <li>WebViewClient <code>onReceivedSslError</code> (??/???/UC)</li>
+          <li>OkHttp 3/4 <code>CertificatePinner.check</code></li>
+          <li>OkHttp repackaged / Commencis fork</li>
+          <li>Squareup OkHttp v1/v2</li>
+          <li><code>OkHostnameVerifier.verify</code></li>
+          <li>Apache HttpClient <code>SSLSocketFactory</code></li>
+          <li>Cronet <code>enablePublicKeyPinningBypass</code></li>
+          <li>Netty <code>FingerprintTrustManagerFactory</code></li>
+          <li>xUtils / TrustKit / WorkLight</li>
+          <li>Cordova / Appcelerator / Turkcell Paycell</li>
+          <li>CertificateTransparency / CommonsWare</li>
+          <li><code>TrustManagerFactory.getTrustManagers</code></li>
+          <li><code>HttpsURLConnection.setHostnameVerifier</code></li>
+          <li>CertPinManager / NetworkSecurityTrustManager</li>
+        </ul>
+      </div>
+
+      <!-- VPN -->
+      <div class="module-card" style="--card-accent: var(--accent-blue)">
+        <div class="card-header">
+          <span class="card-name">VPN Detection Bypass</span>
+          <span class="card-tag tag-enabled">ENABLED</span>
+        </div>
+        <ul class="hook-list">
+          <li><code>NetworkInterface</code> ?? - ?? tun0</li>
+          <li><code>ConnectivityManager.getNetworkCapabilities</code></li>
+          <li><code>SystemProperties.get</code> VPN ????</li>
+          <li><code>Runtime.exec</code> ?? ifconfig/ip ??</li>
+        </ul>
+      </div>
+
+      <!-- Proxy -->
+      <div class="module-card" style="--card-accent: var(--accent-pink)">
+        <div class="card-header">
+          <span class="card-name">Proxy Detection Bypass</span>
+          <span class="card-tag tag-disabled">DISABLED</span>
+        </div>
+        <ul class="hook-list">
+          <li style="color:var(--text-muted)"><code>System.getProperty</code> ????</li>
+          <li style="color:var(--text-muted)"><code>ProxySelector.getDefault</code></li>
+          <li style="color:var(--text-muted)">??? - ?????????????</li>
+        </ul>
+      </div>
+
+      <!-- Developer Options -->
+      <div class="module-card" style="--card-accent: var(--accent-orange)">
+        <div class="card-header">
+          <span class="card-name">Developer Options Bypass</span>
+          <span class="card-tag tag-enabled">ENABLED</span>
+        </div>
+        <ul class="hook-list">
+          <li><code>Settings.Secure/Global</code> ADB ??</li>
+          <li><code>SystemProperties.get</code> ?????</li>
+          <li><code>ro.kernel.qemu</code> ?????</li>
+          <li>EmulatorBypass ??????? <code>SystemProperties.get</code></li>
+        </ul>
+      </div>
+
+      <!-- Debugger -->
+      <div class="module-card" style="--card-accent: var(--accent-yellow)">
+        <div class="card-header">
+          <span class="card-name">Debugger Bypass</span>
+          <span class="card-tag tag-enabled">ENABLED</span>
+        </div>
+        <ul class="hook-list">
+          <li><code>System.exit</code> / <code>Runtime.exit</code> - ???</li>
+          <li><code>Process.killProcess</code>(self) - ???</li>
+          <li><code>Debug.isDebuggerConnected</code></li>
+          <li><code>android.os.Debug</code> ??????</li>
+        </ul>
+      </div>
+
+      <!-- Emulator -->
+      <div class="module-card" style="--card-accent: var(--accent-purple)">
+        <div class="card-header">
+          <span class="card-name">Emulator Bypass</span>
+          <span class="card-tag tag-enabled">ENABLED</span>
+        </div>
+        <ul class="hook-list">
+          <li><code>ro.kernel.qemu</code> ????</li>
+          <li>??? Build ?? (????????)</li>
+          <li>SystemProperties ?? DeveloperOptionsBypass</li>
+        </ul>
+      </div>
+
+      <!-- User Certificate -->
+      <div class="module-card" style="--card-accent: var(--accent-green)">
+        <div class="card-header">
+          <span class="card-name">User Certificate Bypass</span>
+          <span class="card-tag tag-enabled">ENABLED</span>
+        </div>
+        <ul class="hook-list">
+          <li><code>TrustManagerImpl.isUserAddedCertificate</code> &#8594; false</li>
+          <li><code>TrustedCertificateStore.isUserAddedCertificate</code> &#8594; false</li>
+          <li><code>TrustedCertificateStore.isTrustAnchor</code> &#8594; true</li>
+          <li><code>NetworkSecurityConfig</code> ?? CA ??</li>
+        </ul>
+      </div>
+
+      <!-- Network Security -->
+      <div class="module-card" style="--card-accent: var(--accent-cyan)">
+        <div class="card-header">
+          <span class="card-name">Network Security Bypass</span>
+          <span class="card-tag tag-enabled">ENABLED</span>
+        </div>
+        <ul class="hook-list">
+          <li><code>NetworkSecurityConfig.isCleartextTrafficPermitted</code> &#8594; true</li>
+          <li><code>NetworkSecurityPolicy.isCleartextTrafficPermitted</code> &#8594; true</li>
+          <li><code>ConfigNetworkSecurityPolicy</code> &#8594; true</li>
+          <li><code>ManifestConfigSource</code> &#8594; true</li>
+        </ul>
+      </div>
+
+      <!-- SafetyNet -->
+      <div class="module-card" style="--card-accent: var(--accent-blue)">
+        <div class="card-header">
+          <span class="card-name">SafetyNet / Play Integrity</span>
+          <span class="card-tag tag-enabled">ENABLED</span>
+        </div>
+        <ul class="hook-list">
+          <li>SafetyNet API attestation ????</li>
+          <li>Google Play Integrity API ????</li>
+          <li><code>SystemProperties.get</code> SafetyNet ??</li>
+        </ul>
+      </div>
+
+      <!-- AntiFrida -->
+      <div class="module-card" style="--card-accent: var(--accent-orange)">
+        <div class="card-header">
+          <span class="card-name">Anti-Frida Bypass</span>
+          <span class="card-tag tag-conditional">CONDITIONAL</span>
+        </div>
+        <ul class="hook-list">
+          <li><code>/proc/net/tcp</code> ?? 27042/27043 ??</li>
+          <li><code>Runtime.exec</code> ps/frida ????</li>
+          <li><code>System.load</code> ?? .so ??</li>
+          <li><code>Socket.connect</code> ??????</li>
+          <li>? Frida ????? Hook (???)</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Native Layer Frida -->
+  <div class="section">
+    <div class="section-title">
+      <div class="icon" style="background:rgba(179,136,255,0.15);color:var(--accent-purple)">&#9881;</div>
+      <span>Native ? Frida ??</span>
+      <div class="line"></div>
+    </div>
+    <div class="frida-grid">
+      <div class="frida-card">
+        <div class="frida-name">native_ssl_bypass.js</div>
+        <div class="frida-desc">BoringSSL / OpenSSL ???????Hook <code>SSL_CTX_set_verify</code>?<code>SSL_set_verify</code>?<code>SSL_get_verify_result</code>?<code>X509_verify_cert</code>?<code>ssl_verify_peer_cert</code> ?,?????????????</div>
+        <div class="frida-ver">Android 5.0+ | libssl / libboringssl / libconscrypt_jni</div>
+      </div>
+      <div class="frida-card">
+        <div class="frida-name">flutter_bypass.js</div>
+        <div class="frida-desc">Flutter / Dart ?? SSL Pinning ???Hook <code>libflutter.so</code> ?????? BoringSSL ????,Release/Debug ???</div>
+        <div class="frida-ver">Flutter 1.x ~ 3.24 | arm64 / arm / x86_64</div>
+      </div>
+      <div class="frida-card">
+        <div class="frida-name">react_native_bypass.js</div>
+        <div class="frida-desc">React Native ????????? Flipper?ReactNativeOkHttpProvider?RCTNetworkTask?Cronet?TrustKit ??</div>
+        <div class="frida-ver">RN 0.59 ~ 0.74 | New Architecture + Bridge</div>
+      </div>
+      <div class="frida-card">
+        <div class="frida-name">cordova_bypass.js</div>
+        <div class="frida-desc">Cordova / Ionic SSL ????? WebView SSL ???cordova-plugin-advanced-http?SSLCertificateChecker?Ionic Native HTTP?</div>
+        <div class="frida-ver">Cordova 8-12 | Ionic 3-7</div>
+      </div>
+      <div class="frida-card">
+        <div class="frida-name">hybrid_framework_bypass.js</div>
+        <div class="frida-desc">Root/Frida/??/???/VPN/?? ?????libc ?????? su/magisk/frida ???</div>
+        <div class="frida-ver">Android 5.0-14 | ???</div>
+      </div>
+      <div class="frida-card">
+        <div class="frida-name">anti_frida_detection.js</div>
+        <div class="frida-desc">Native ? Frida ???fd ?? <code>open</code>/<code>read</code>/<code>close</code>,?? /proc ?? frida ???,???????</div>
+        <div class="frida-ver">??? | ???? (fd-tracking ??)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TLS Version Coverage -->
+  <div class="section">
+    <div class="section-title">
+      <div class="icon" style="background:rgba(255,145,0,0.15);color:var(--accent-orange)">&#128274;</div>
+      <span>TLS ???? (v2.8 ??????)</span>
+      <div class="line"></div>
+    </div>
+    <table class="tls-table">
+      <thead>
+        <tr>
+          <th>TLS ??</th>
+          <th>??????</th>
+          <th>??????</th>
+          <th>Java ?</th>
+          <th>Native ?</th>
+          <th>?? Android</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tls-version tls-1-0">TLS 1.0</span></td>
+          <td class="check">&#10003; TrustManager Hook</td>
+          <td class="check">&#10003; setEnabledProtocols</td>
+          <td class="check">&#10003;</td>
+          <td class="check">&#10003;</td>
+          <td>5.0+ (API 21+)</td>
+        </tr>
+        <tr>
+          <td><span class="tls-version tls-1-1">TLS 1.1</span></td>
+          <td class="check">&#10003; TrustManager Hook</td>
+          <td class="check">&#10003; setEnabledProtocols</td>
+          <td class="check">&#10003;</td>
+          <td class="check">&#10003;</td>
+          <td>5.0+ (API 21+)</td>
+        </tr>
+        <tr>
+          <td><span class="tls-version tls-1-2">TLS 1.2</span></td>
+          <td class="check">&#10003; TrustManager + SSLContext</td>
+          <td class="check">&#10003; setEnabledProtocols</td>
+          <td class="check">&#10003;</td>
+          <td class="check">&#10003; X509_verify_cert</td>
+          <td>5.0+ (API 21+)</td>
+        </tr>
+        <tr>
+          <td><span class="tls-version tls-1-3">TLS 1.3</span></td>
+          <td class="check">&#10003; Conscrypt + BoringSSL</td>
+          <td class="check">&#10003; setEnabledProtocols</td>
+          <td class="check">&#10003;</td>
+          <td class="check">&#10003; ssl_verify_peer_cert</td>
+          <td>10+ (API 30+)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Framework Compatibility -->
+  <div class="section">
+    <div class="section-title">
+      <div class="icon" style="background:rgba(0,229,255,0.15);color:var(--accent-cyan)">&#128241;</div>
+      <span>?? / ?????</span>
+      <div class="line"></div>
+    </div>
+    <div class="compat-grid">
+      <div class="compat-item">
+        <div class="compat-icon">&#9881;</div>
+        <div class="compat-name">?? Android</div>
+        <div class="compat-ver">Java / Kotlin</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#129302;</div>
+        <div class="compat-name">Flutter</div>
+        <div class="compat-ver">1.x ~ 3.24</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#9881;</div>
+        <div class="compat-name">React Native</div>
+        <div class="compat-ver">0.59 ~ 0.74</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#128241;</div>
+        <div class="compat-name">Cordova / Ionic</div>
+        <div class="compat-ver">Cordova 8-12, Ionic 3-7</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#128172;</div>
+        <div class="compat-name">??</div>
+        <div class="compat-ver">??? + ?????</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#128279;</div>
+        <div class="compat-name">OkHttp</div>
+        <div class="compat-ver">v1 ~ v4 ???</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#128279;</div>
+        <div class="compat-name">Apache HttpClient</div>
+        <div class="compat-ver">??</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#127744;</div>
+        <div class="compat-name">WebView</div>
+        <div class="compat-ver">System / Crosswalk / X5</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#9889;</div>
+        <div class="compat-name">Cronet</div>
+        <div class="compat-ver">Chromium ???</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#128640;</div>
+        <div class="compat-name">Netty</div>
+        <div class="compat-ver">FingerprintTrustManager</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#128737;</div>
+        <div class="compat-name">TrustKit</div>
+        <div class="compat-ver">??</div>
+      </div>
+      <div class="compat-item">
+        <div class="compat-icon">&#128737;</div>
+        <div class="compat-name">WorkLight</div>
+        <div class="compat-ver">IBM MobileFirst</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>TrustMeAlready v2.8.0 - Comprehensive Security Bypass Module</p>
+    <div class="version-info">
+      <span>versionCode: 10</span>
+      <span>minSdk: 21</span>
+      <span>targetSdk: 34</span>
+      <span>Arch: arm64 / arm / x86 / x86_64</span>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
