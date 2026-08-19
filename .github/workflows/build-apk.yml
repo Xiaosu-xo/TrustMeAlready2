@@ -1,4 +1,4 @@
-name: 自动打包 Release APK
+name: 自动打包 ARM64 Release APK
 
 on:
   workflow_dispatch:
@@ -25,11 +25,23 @@ jobs:
           yes | sdkmanager --licenses >/dev/null || true
           sdkmanager "platforms;android-34" "build-tools;34.0.0"
 
+      - name: 只保留 ARM64
+        run: |
+          echo "打包前架构："
+          find app/src/main/jniLibs -maxdepth 1 -mindepth 1 -type d -printf '%f\n'
+
+          rm -rf app/src/main/jniLibs/armeabi-v7a
+          rm -rf app/src/main/jniLibs/x86
+          rm -rf app/src/main/jniLibs/x86_64
+
+          echo "打包后架构："
+          find app/src/main/jniLibs -maxdepth 1 -mindepth 1 -type d -printf '%f\n'
+
       - name: 给 Gradle 执行权限
         run: chmod +x gradlew
 
-      - name: 编译 Release
-        run: ./gradlew assembleRelease
+      - name: 编译 ARM64 Release
+        run: ./gradlew assembleRelease --stacktrace
 
       - name: 创建签名证书
         run: |
@@ -41,25 +53,32 @@ jobs:
             -keyalg RSA \
             -keysize 2048 \
             -validity 10000 \
-            -dname "CN=TrustMeAlready2"
+            -dname "CN=TrustMeAlready2 ARM64"
 
-      - name: 签名 Release APK
+      - name: 签名 APK
         run: |
           $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
             --ks release.keystore \
             --ks-pass pass:android \
             --key-pass pass:android \
             --ks-key-alias release \
-            --out TrustMeAlready2-release.apk \
+            --out TrustMeAlready2-v2.8.0-ARM64-Release.apk \
             app/build/outputs/apk/release/app-release-unsigned.apk
 
-      - name: 验证 APK 签名
+      - name: 检查 APK
         run: |
           $ANDROID_HOME/build-tools/34.0.0/apksigner verify \
-            --verbose TrustMeAlready2-release.apk
+            --verbose \
+            TrustMeAlready2-v2.8.0-ARM64-Release.apk
 
-      - name: 上传 Release APK
+          echo "APK 大小："
+          ls -lh TrustMeAlready2-v2.8.0-ARM64-Release.apk
+
+          echo "APK 中的 native 架构："
+          unzip -l TrustMeAlready2-v2.8.0-ARM64-Release.apk | grep "lib/"
+
+      - name: 上传 APK
         uses: actions/upload-artifact@v4
         with:
-          name: TrustMeAlready2-Release
-          path: TrustMeAlready2-release.apk
+          name: TrustMeAlready2-v2.8.0-ARM64-Release
+          path: TrustMeAlready2-v2.8.0-ARM64-Release.apk
