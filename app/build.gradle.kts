@@ -12,8 +12,8 @@ android {
         // Android 5.0 (API 21) - Android 16 (API 36)
         minSdk = 21
         targetSdk = 34
-        versionCode = 10
-        versionName = "2.8.0"
+        versionCode = 9
+        versionName = "2.7.0"
     }
 
     compileOptions {
